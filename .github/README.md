@@ -5,7 +5,7 @@ local dictation app. A floating bubble records; Hex's own speech engine
 transcribes on your phone; the text goes into whatever you're typing in.
 Nothing you say leaves the phone.
 
-- **Download:** the APK is on the [Releases](../../releases) page.
+- **Download:** the APK is on the [Releases](../../../releases) page.
 - **Install, use and build:** see [`android/README.md`](../android/README.md).
 
 This repository is a fork of [anomalyco/hex](https://github.com/anomalyco/hex).
