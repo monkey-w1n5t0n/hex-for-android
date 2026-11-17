@@ -7,7 +7,7 @@ import org.json.JSONObject
 
 /**
  * User settings, with defaults for someone who just installed the app:
- * Parakeet Unified English, spoken formatting and filler removal on, vocabulary
+ * Auto dictation language, spoken formatting and filler removal on, vocabulary
  * biasing on (it does nothing until there are terms), sounds off.
  */
 class Settings(context: Context) {
@@ -33,6 +33,8 @@ class Settings(context: Context) {
     var bubbleVisibility by string("bubble_visibility", "keyboard")
     /** auto: edit the field's text; paste: put it on the clipboard and paste. */
     var insertMode by string("insert_mode", "auto")
+    /** auto: no language hint, the engine uses the model's own choice (desktop Hex's AUTO_LANGUAGE). */
+    var dictationLanguage by string("dictation_language", "auto")
     /** CPU threads for transcription; 0 picks [autoThreads]. */
     var threads by int("threads_v2", 0)
     var bubbleShape by string("bubble_shape", BubbleShape.Circle.name)
@@ -45,7 +47,10 @@ class Settings(context: Context) {
     fun threadCount() = if (threads > 0) threads else autoThreads()
 
     fun runSettings(): JSONObject = JSONObject().apply {
-        put("language", "en")
+        // "auto" leaves the key out: RunSettings.language is None, so the
+        // engine uses the model's own choice, as desktop Hex does for
+        // AUTO_LANGUAGE (runtime_language_hint in models.rs).
+        if (dictationLanguage != "auto") put("language", dictationLanguage)
         val terms = Vocabulary.entries(app)
         if (vocabularyBiasing && terms.isNotEmpty()) {
             put("vocabulary", JSONArray(terms.map { it.toJson() }))
@@ -64,7 +69,9 @@ class Settings(context: Context) {
         put("spoken_formatting", spokenFormatting)
         put("spoken_symbols", spokenSymbols)
         put("filler_words", fillerWords)
-        put("language", "en")
+        // Filler-word removal only applies to "en", so Auto keeps today's
+        // behaviour rather than turning the step off by accident.
+        put("language", if (dictationLanguage == "auto") "en" else dictationLanguage)
         put("replacements", JSONArray(replacements().map { (phrase, output) -> JSONObject().put("matched_phrase", phrase).put("output", output) }))
     }
 

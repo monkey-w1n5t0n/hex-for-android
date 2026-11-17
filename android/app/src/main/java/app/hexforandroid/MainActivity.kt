@@ -225,6 +225,10 @@ class MainActivity : Activity() {
         advanced = ui.card().apply {
             visibility = View.GONE
             row(modelRow)
+            row(ui.row("Dictation language", "Auto lets the model choose", R.drawable.hex_icon_terminal, below = ui.segmented(
+                listOf("auto" to "Auto", "en" to "English", "fr" to "Français", "es" to "Español", "de" to "Deutsch"),
+                settings.dictationLanguage,
+            ) { settings.dictationLanguage = it }))
             row(soundsRow)
             row(ui.row("Insert text", "Paste uses the clipboard", R.drawable.hex_icon_paste, below = ui.segmented(
                 listOf("auto" to "Type", "paste" to "Paste"), settings.insertMode,

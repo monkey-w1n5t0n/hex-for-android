@@ -48,6 +48,20 @@ To check the APK's signature before installing, compare the SHA-256
 certificate digest published with the release against
 `apksigner verify --print-certs hex-android-<version>.apk`.
 
+## Dictation language
+
+**Advanced › Dictation language** decides what the app tells the engine and the
+text steps. `Auto` sends no language hint at all, so the engine uses the
+model's own choice — the same as desktop Hex's `AUTO_LANGUAGE`. The text steps
+fall back to English on `Auto`, because their filler-word list is English-only.
+The setting is read at every dictation, so a change needs no restart.
+
+With the single pinned English model, only English is useful today. This
+setting is the plumbing for a model catalogue: once the app can load the
+desktop's models, each one would offer its own supported languages, and a hint
+would be sent only when the model accepts one (`accepts_language_hint` in
+`src/transcription/models.rs`).
+
 ## What it reuses from Hex
 
 | Part | Source in Hex | How |
